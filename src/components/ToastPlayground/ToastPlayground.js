@@ -11,7 +11,7 @@ const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 function ToastPlayground() {
   const [message, setMessage] = React.useState("");
   const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
-  const { addToast } = React.useContext(ToastContext);
+  const { createToast } = React.useContext(ToastContext);
 
   function resetVariant() {
     setVariant(VARIANT_OPTIONS[0]);
@@ -19,7 +19,7 @@ function ToastPlayground() {
 
   function handleAddToast(event) {
     event.preventDefault();
-    addToast(variant, message);
+    createToast(variant, message);
     setMessage("");
     resetVariant();
   }
