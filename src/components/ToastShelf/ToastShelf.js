@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ToastContext } from "../ToastProvider";
+import Toast from "../Toast";
 import styles from "./ToastShelf.module.css";
 
 function ToastShelf() {
@@ -8,10 +9,12 @@ function ToastShelf() {
 
   return (
     <ol className={styles.wrapper}>
-      {toasts?.map((toast, index) => {
+      {toasts?.map(({ id, message, variant }) => {
         return (
-          <li key={index} className={styles.toastWrapper}>
-            {toast}
+          <li key={id} className={styles.toastWrapper}>
+            <Toast message={message} variant={variant} id={id}>
+              {message}
+            </Toast>
           </li>
         );
       })}

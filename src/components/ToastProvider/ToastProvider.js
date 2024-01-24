@@ -7,24 +7,17 @@ function ToastProvider({ children }) {
   const [toasts, setToasts] = React.useState([]);
 
   const addToast = React.useCallback((variant, message) => {
-    const nextToast = (
-      <Toast
-        message={message}
-        handleDismiss={dismissToast}
-        variant={variant}
-        id={crypto.randomUUID()}
-      >
-        {message}
-      </Toast>
-    );
-    setToasts((currToasts) => [...currToasts, nextToast]);
+    const newToast = {
+      id: crypto.randomUUID(),
+      variant: variant,
+      message: message,
+    };
+    setToasts((currToasts) => [...currToasts, newToast]);
   }, []);
 
   const dismissToast = React.useCallback((toastId) => {
     setToasts((currToasts) => {
-      const nextToasts = currToasts.filter(
-        (toast) => toast.props.id !== toastId
-      );
+      const nextToasts = currToasts.filter((toast) => toast.id !== toastId);
       return nextToasts;
     });
   }, []);
