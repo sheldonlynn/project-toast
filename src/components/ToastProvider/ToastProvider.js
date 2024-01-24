@@ -6,6 +6,20 @@ export const ToastContext = React.createContext();
 function ToastProvider({ children }) {
   const [toasts, setToasts] = React.useState([]);
 
+  React.useEffect(() => {
+    function handleKeydown(event) {
+      if (event.code === "Escape") {
+        dismissAllToasts();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []);
+
   const createToast = React.useCallback((variant, message) => {
     const newToast = {
       id: crypto.randomUUID(),
@@ -22,8 +36,12 @@ function ToastProvider({ children }) {
     });
   }, []);
 
+  const dismissAllToasts = React.useCallback(() => {
+    setToasts([]);
+  }, []);
+
   const value = React.useMemo(() => {
-    return { toasts, createToast, dismissToast };
+    return { toasts, createToast, dismissToast, dismissAllToasts };
   }, [toasts]);
 
   return (
