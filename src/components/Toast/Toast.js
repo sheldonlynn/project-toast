@@ -20,7 +20,7 @@ const ICONS_BY_VARIANT = {
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
-function Toast({ variant = VARIANT_OPTIONS[0], handleDismiss, children }) {
+function Toast({ variant = VARIANT_OPTIONS[0], id, handleDismiss, children }) {
   const ToastIcon = ICONS_BY_VARIANT[variant];
 
   return (
@@ -29,7 +29,7 @@ function Toast({ variant = VARIANT_OPTIONS[0], handleDismiss, children }) {
         <ToastIcon size={24} />
       </div>
       <p className={styles.content}>{children}</p>
-      <button className={styles.closeButton} onClick={handleDismiss}>
+      <button className={styles.closeButton} onClick={() => handleDismiss(id)}>
         <X size={24} />
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>
@@ -37,4 +37,4 @@ function Toast({ variant = VARIANT_OPTIONS[0], handleDismiss, children }) {
   );
 }
 
-export default Toast;
+export default React.memo(Toast);

@@ -1,19 +1,27 @@
 import React from "react";
 
 import Button from "../Button";
-import Toast from "../Toast";
+import ToastShelf from "../ToastShelf";
+import { ToastContext } from "../ToastProvider";
 
 import styles from "./ToastPlayground.module.css";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
-  [message, setMessage] = React.useState("");
-  [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
-  [isRendered, setIsRendered] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
+  const { addToast } = React.useContext(ToastContext);
 
-  function handleDismiss() {
-    setIsRendered(false);
+  function resetVariant() {
+    setVariant(VARIANT_OPTIONS[0]);
+  }
+
+  function handleAddToast(event) {
+    event.preventDefault();
+    addToast(variant, message);
+    setMessage("");
+    resetVariant();
   }
 
   return (
@@ -23,64 +31,58 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      {isRendered && (
-        <Toast
-          message={message}
-          handleDismiss={handleDismiss}
-          variant={variant}
-        >
-          {message}
-        </Toast>
-      )}
+      <ToastShelf />
 
-      <div className={styles.controlsWrapper}>
-        <div className={styles.row}>
-          <label
-            htmlFor="message"
-            className={styles.label}
-            style={{ alignSelf: "baseline" }}
-          >
-            Message
-          </label>
-          <div className={styles.inputWrapper}>
-            <textarea
-              id="message"
-              className={styles.messageInput}
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-            />
+      <form onSubmit={(event) => handleAddToast(event)}>
+        <div className={styles.controlsWrapper}>
+          <div className={styles.row}>
+            <label
+              htmlFor="message"
+              className={styles.label}
+              style={{ alignSelf: "baseline" }}
+            >
+              Message
+            </label>
+            <div className={styles.inputWrapper}>
+              <textarea
+                id="message"
+                className={styles.messageInput}
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.label}>Variant</div>
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              {VARIANT_OPTIONS.map((option) => {
+                const id = `variant-${option}`;
+                return (
+                  <label htmlFor={id} key={option}>
+                    <input
+                      id={id}
+                      type="radio"
+                      name="variant"
+                      value={option}
+                      checked={variant === option}
+                      onChange={(event) => setVariant(event.target.value)}
+                    />
+                    {option}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.label} />
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              <Button>Pop Toast!</Button>
+            </div>
           </div>
         </div>
-
-        <div className={styles.row}>
-          <div className={styles.label}>Variant</div>
-          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            {VARIANT_OPTIONS.map((option) => {
-              const id = `variant-${option}`;
-              return (
-                <label htmlFor={id} key={option}>
-                  <input
-                    id={id}
-                    type="radio"
-                    name="variant"
-                    value={option}
-                    checked={variant === option}
-                    onChange={(evt) => setVariant(evt.target.value)}
-                  />
-                  {option}
-                </label>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.label} />
-          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => setIsRendered(true)}>Pop Toast!</Button>
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
   );
 }
